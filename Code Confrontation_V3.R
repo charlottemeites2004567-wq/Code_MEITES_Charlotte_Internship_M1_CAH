@@ -1239,3 +1239,54 @@ treatment:odor_presence   1.3967  1   0.237276
 treatment:familiarity     2.7936  1   0.094644 . 
 odor_presence:familiarity 3.7626  1   0.052410 . "
 
+# graph-------------------
+
+
+ggplot(data_confrontation, aes(x = odor_label, y = f_nbr_scream)) +
+  
+  geom_boxplot(aes(fill = odor_label), 
+               color = "black",
+               outlier.shape = NA,
+               width = 0.5,
+               alpha = 0.9,
+               linewidth = 0.5,
+               na.rm = TRUE) + 
+  
+  geom_jitter(color = "black", 
+              width = 0.08, 
+              height = 0, 
+              size = 2, 
+              alpha = 0.4,
+              na.rm = TRUE) +
+  
+  facet_wrap(~ familiarity_label, scales = "free_x") +
+  
+  geom_segment(data = annotations_scream, 
+               aes(x = xmin, xend = xmax, y = y, yend = y),
+               inherit.aes = FALSE,
+               color = "black",
+               linewidth = 0.5) +
+  
+  geom_text(data = annotations_scream, 
+            aes(x = x, y = y + (valeur_hauteur_barre * 0.03), label = label),
+            inherit.aes = FALSE,
+            size = 5) +
+  
+  scale_fill_manual(values = c("No odour" = "grey65", "Odour" = "grey90"), name = "Odor Presence") +
+    scale_y_continuous(expand = expansion(mult = c(0.05, 0.15))) +
+  coord_cartesian(ylim = c(0, valeur_hauteur_barre * 1.15)) + 
+  
+  labs(x = "Odor Presence", 
+       y = "Scream frequency (count/min)") +
+  
+  theme_bw() +
+  theme(
+    legend.position = "right", 
+    panel.grid = element_blank(),
+    strip.background = element_blank(),
+    strip.text = ggtext::element_markdown(size = 12, face = "bold"), 
+    axis.title = element_text(size = 11),
+    axis.text = element_text(size = 10),
+    panel.border = element_rect(color = "black", fill = NA, linewidth = 0.5)
+  ) +
+  guides(fill = guide_legend(override.aes = list(color = "black")))
